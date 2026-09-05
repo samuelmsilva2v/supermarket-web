@@ -1,0 +1,123 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="mb-4">
+                <h2 class="fonte-titulo mb-1">Movimentação de estoque</h2>
+                <p class="text-muted mb-0">Registre entradas e saídas de estoque e consulte o histórico por produto.</p>
+            </div>
+
+            <div class="card card-etiqueta p-4 mb-4">
+
+                <div *ngIf="mensagem" class="alert alert-success">
+                    <strong>Sucesso!</strong> {{ mensagem }}
+                </div>
+
+                <div *ngIf="erroGeral" class="alert alert-danger">
+                    <strong>Erro!</strong> {{ erroGeral }}
+                </div>
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <select class="form-select" formControlName="produtoId" id="produto"
+                                (change)="onProdutoChange()" required>
+                                <option value="" disabled selected>Selecione o produto</option>
+
+                                <option *ngFor="let p of produtos" value="{{ p.id }}">
+                                    {{ p.nome }}
+                                </option>
+                            </select>
+                            <label for="produto">Produto</label>
+                        </div>
+
+                        <div *ngIf="produtoSelecionado" class="form-text">
+                            Estoque atual: <strong>{{ produtoSelecionado.quantidade }}</strong> unidade(s).
+                        </div>
+
+                        <app-erro-campo [controle]="form.controls.produtoId" [mensagens]="mensagensProduto"
+                            [erroServidor]="erros?.produtoId"></app-erro-campo>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" formControlName="tipo" id="tipo" required>
+                                    <option value="ENTRADA">Entrada</option>
+                                    <option value="SAIDA">Saída</option>
+                                </select>
+                                <label for="tipo">Tipo</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 mb-3">
+                            <div class="form-floating">
+                                <input type="number" formControlName="quantidade" class="form-control numero"
+                                    id="quantidade" placeholder=" " min="1" required>
+                                <label for="quantidade">Quantidade</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.quantidade" [mensagens]="mensagensQuantidade"
+                                [erroServidor]="erros?.quantidade"></app-erro-campo>
+                        </div>
+
+                        <div class="col-sm-5 mb-3">
+                            <div class="form-floating">
+                                <input type="text" formControlName="motivo" class="form-control" id="motivo"
+                                    placeholder=" " required>
+                                <label for="motivo">Motivo</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.motivo" [mensagens]="mensagensMotivo"
+                                [erroServidor]="erros?.motivo"></app-erro-campo>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" [disabled]="form.invalid">Registrar movimentação</button>
+                </form>
+            </div>
+
+            <div class="card card-etiqueta p-4" *ngIf="form.value.produtoId">
+                <h5 class="mb-3">Histórico de movimentações</h5>
+
+                <div class="table-responsive" *ngIf="movimentacoes.length > 0">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Motivo</th>
+                                <th>Usuário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of movimentacoes">
+                                <td>{{ m.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td>
+                                    <span class="badge" [ngClass]="m.tipo === 'ENTRADA' ? 'bg-success' : 'bg-danger'">
+                                        {{ m.tipo === 'ENTRADA' ? 'Entrada' : 'Saída' }}
+                                    </span>
+                                </td>
+                                <td>{{ m.quantidade }}</td>
+                                <td>{{ m.motivo }}</td>
+                                <td>{{ m.usuarioNome }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p *ngIf="movimentacoes.length === 0" class="text-muted text-center mb-0">
+                    Nenhuma movimentação registrada para este produto.
+                </p>
+
+                <app-paginacao *ngIf="movimentacoes.length > 0" [paginaAtual]="pagina" [totalPaginas]="totalPaginas"
+                    [totalElementos]="totalElementos" [tamanhoPagina]="tamanho" (paginaMudou)="onPaginaMudou($event)"
+                    (tamanhoMudou)="onTamanhoMudou($event)">
+                </app-paginacao>
+            </div>
+
+        </div>
+    </div>
+</div>

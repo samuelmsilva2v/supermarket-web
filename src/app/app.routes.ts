@@ -10,6 +10,7 @@ import { AutenticarUsuarioComponent } from './components/pages/autenticar-usuari
 import { CriarUsuarioComponent } from './components/pages/criar-usuario/criar-usuario.component';
 import { ConsultaUsuariosComponent } from './components/pages/consulta-usuarios/consulta-usuarios.component';
 import { EdicaoUsuariosComponent } from './components/pages/edicao-usuarios/edicao-usuarios.component';
+import { MovimentacaoEstoqueComponent } from './components/pages/movimentacao-estoque/movimentacao-estoque.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 
@@ -66,6 +67,11 @@ export const routes: Routes = [
     {
         path: 'pages/edicao-categorias/:id',
         component: EdicaoCategoriasComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'pages/movimentacao-estoque',
+        component: MovimentacaoEstoqueComponent,
         canActivate: [AuthGuard]
     },
     {

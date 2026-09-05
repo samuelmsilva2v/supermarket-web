@@ -9,5 +9,6 @@ export const endpoints = {
     autenticar_usuario : `${supermarketApi}/api/usuario/autenticar`,
     criar_usuario : `${supermarketApi}/api/usuario/criar`,
     usuario : `${supermarketApi}/api/usuario`,
-    consultar_usuarios : `${supermarketApi}/api/usuario`
+    consultar_usuarios : `${supermarketApi}/api/usuario`,
+    movimentacao_estoque : `${supermarketApi}/api/movimentacoes-estoque`
 };
