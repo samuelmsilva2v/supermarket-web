@@ -42,8 +42,15 @@
                     </ul>
                 </li>
 
-                <li class="nav-item" *ngIf="isAuthenticated && isAdmin">
-                    <a class="nav-link" routerLink="/pages/criar-usuario">Cadastrar usuário</a>
+                <li class="nav-item dropdown" *ngIf="isAuthenticated && isAdmin">
+
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUsuarios" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Usuários</a>
+
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownUsuarios">
+                        <li><a class="dropdown-item" routerLink="/pages/criar-usuario">Cadastrar usuário</a></li>
+                        <li><a class="dropdown-item" routerLink="/pages/consulta-usuarios">Consultar usuários</a></li>
+                    </ul>
                 </li>
             </ul>
 

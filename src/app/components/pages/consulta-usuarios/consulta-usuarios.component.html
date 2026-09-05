@@ -1,0 +1,54 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="mb-4">
+                <h2 class="fonte-titulo mb-1">Consulta de usuários</h2>
+                <p class="text-muted mb-0">Filtre pelo username e edite os usuários cadastrados.</p>
+            </div>
+
+            <div class="card card-etiqueta p-4 mb-4">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex gap-2 align-items-center flex-wrap">
+                    <div class="form-floating flex-grow-1">
+                        <input type="text" formControlName="username" class="form-control" id="usernameUsuario"
+                            placeholder=" ">
+                        <label for="usernameUsuario">Filtrar por username</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Pesquisar</button>
+                </form>
+            </div>
+
+            <div class="row g-3" *ngIf="usuarios.length > 0">
+                <div class="col-md-6 col-lg-4" *ngFor="let u of usuarios">
+                    <div class="card card-etiqueta p-3 h-100 d-flex flex-column">
+                        <span class="badge mb-2" [ngClass]="u.perfil === 'Administrador' ? 'bg-primary' : 'bg-secondary'"
+                            style="width: fit-content;">
+                            {{ u.perfil }}
+                        </span>
+
+                        <h5 class="mb-1">{{ u.nome }} {{ u.sobrenome }}</h5>
+
+                        <p class="text-muted mb-3">
+                            &#64;{{ u.username }}
+                            <br>
+                            {{ u.email }}
+                        </p>
+
+                        <div class="mt-auto">
+                            <button [routerLink]="['/pages/edicao-usuarios', u.id]" class="btn btn-warning btn-sm w-100">Atualizar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p *ngIf="usuarios.length === 0" class="text-muted text-center mt-4">
+                Nenhum usuário encontrado.
+            </p>
+
+            <app-paginacao [paginaAtual]="pagina" [totalPaginas]="totalPaginas" [totalElementos]="totalElementos"
+                [tamanhoPagina]="tamanho" (paginaMudou)="onPaginaMudou($event)" (tamanhoMudou)="onTamanhoMudou($event)">
+            </app-paginacao>
+
+        </div>
+    </div>
+</div>
