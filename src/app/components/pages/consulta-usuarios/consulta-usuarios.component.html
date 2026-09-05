@@ -18,6 +18,14 @@
                 </form>
             </div>
 
+            <div *ngIf="mensagem" class="alert alert-success">
+                <strong>Sucesso!</strong> {{ mensagem }}
+            </div>
+
+            <div *ngIf="erroStatus" class="alert alert-danger">
+                <strong>Erro!</strong> {{ erroStatus }}
+            </div>
+
             <div class="row g-3" *ngIf="usuarios.length > 0">
                 <div class="col-md-6 col-lg-4" *ngFor="let u of usuarios">
                     <div class="card card-etiqueta p-3 h-100 d-flex flex-column">
@@ -34,8 +42,12 @@
                             {{ u.email }}
                         </p>
 
-                        <div class="mt-auto">
-                            <button [routerLink]="['/pages/edicao-usuarios', u.id]" class="btn btn-warning btn-sm w-100">Atualizar</button>
+                        <div class="mt-auto d-flex gap-2">
+                            <button [routerLink]="['/pages/edicao-usuarios', u.id]" class="btn btn-warning btn-sm flex-grow-1">Atualizar</button>
+                            <button (click)="onAlterarStatus(u)" class="btn btn-sm flex-grow-1"
+                                [ngClass]="u.ativo ? 'btn-danger' : 'btn-success'">
+                                {{ u.ativo ? 'Inativar' : 'Ativar' }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -52,3 +64,9 @@
         </div>
     </div>
 </div>
+
+<app-confirm-modal [open]="exibirConfirmacaoStatus" [title]="tituloConfirmacaoStatus"
+    [message]="mensagemConfirmacaoStatus" [confirmText]="usuarioParaAlterarStatus?.ativo ? 'Inativar' : 'Ativar'"
+    cancelText="Cancelar" [variant]="usuarioParaAlterarStatus?.ativo ? 'danger' : 'primary'"
+    (confirmed)="confirmarAlteracaoStatus()" (cancelled)="cancelarAlteracaoStatus()">
+</app-confirm-modal>

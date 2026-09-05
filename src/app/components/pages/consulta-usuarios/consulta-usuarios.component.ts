@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { endpoints } from '../../../configurations/environment';
+import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { PaginacaoComponent } from '../../shared/paginacao/paginacao.component';
 import { PaginaResponse } from '../../../models/pagina-response.model';
 
@@ -15,6 +16,7 @@ import { PaginaResponse } from '../../../models/pagina-response.model';
     FormsModule,
     ReactiveFormsModule,
     RouterLink,
+    ConfirmModalComponent,
     PaginacaoComponent
   ],
   templateUrl: './consulta-usuarios.component.html',
@@ -24,6 +26,10 @@ export class ConsultaUsuariosComponent {
 
   // Atributos
   usuarios: any[] = [];
+  mensagem: string = '';
+  erroStatus: string = '';
+  usuarioParaAlterarStatus: any | null = null;
+  exibirConfirmacaoStatus: boolean = false;
 
   // Estado da paginação
   pagina: number = 0;
@@ -82,5 +88,57 @@ export class ConsultaUsuariosComponent {
     this.tamanho = novoTamanho;
     this.pagina = 0;
     this.carregarUsuarios();
+  }
+
+  get tituloConfirmacaoStatus(): string {
+    return this.usuarioParaAlterarStatus?.ativo ? 'Inativar usuário' : 'Ativar usuário';
+  }
+
+  get mensagemConfirmacaoStatus(): string {
+    const u = this.usuarioParaAlterarStatus;
+    if (!u) {
+      return '';
+    }
+    return u.ativo
+      ? `Deseja realmente inativar o usuário ${u.nome} ${u.sobrenome}?`
+      : `Deseja realmente ativar o usuário ${u.nome} ${u.sobrenome}?`;
+  }
+
+  // Abre o modal de confirmação de ativação/inativação de usuário
+  onAlterarStatus(usuario: any) {
+    this.usuarioParaAlterarStatus = usuario;
+    this.exibirConfirmacaoStatus = true;
+  }
+
+  // Função para enviar a requisição de ativação/inativação de usuário para a API
+  confirmarAlteracaoStatus() {
+    this.exibirConfirmacaoStatus = false;
+
+    const usuario = this.usuarioParaAlterarStatus;
+    if (!usuario) {
+      return;
+    }
+
+    const novoStatus = !usuario.ativo;
+
+    this.http.patch(`${endpoints.usuario}/${usuario.id}/status`, { ativo: novoStatus })
+      .subscribe({
+        next: (data: any) => {
+          this.mensagem = `Usuário ${data.nome} ${data.sobrenome} ${novoStatus ? 'ativado' : 'inativado'} com sucesso.`;
+          this.erroStatus = '';
+          usuario.ativo = data.ativo;
+        },
+        error: (e) => {
+          this.mensagem = '';
+          this.erroStatus = typeof e.error === 'string' ? e.error : 'Não foi possível atualizar o status do usuário.';
+        }
+      });
+
+    this.usuarioParaAlterarStatus = null;
+  }
+
+  cancelarAlteracaoStatus() {
+    this.exibirConfirmacaoStatus = false;
+    this.usuarioParaAlterarStatus = null;
   }
 }
