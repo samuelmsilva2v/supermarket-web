@@ -8,6 +8,8 @@ import { EdicaoCategoriasComponent } from './components/pages/edicao-categorias/
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 import { AutenticarUsuarioComponent } from './components/pages/autenticar-usuario/autenticar-usuario.component';
 import { CriarUsuarioComponent } from './components/pages/criar-usuario/criar-usuario.component';
+import { ConsultaUsuariosComponent } from './components/pages/consulta-usuarios/consulta-usuarios.component';
+import { EdicaoUsuariosComponent } from './components/pages/edicao-usuarios/edicao-usuarios.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 
@@ -19,6 +21,16 @@ export const routes: Routes = [
     {
         path: 'pages/criar-usuario',
         component: CriarUsuarioComponent,
+        canActivate: [AuthGuard, AdminGuard]
+    },
+    {
+        path: 'pages/consulta-usuarios',
+        component: ConsultaUsuariosComponent,
+        canActivate: [AuthGuard, AdminGuard]
+    },
+    {
+        path: 'pages/edicao-usuarios/:id',
+        component: EdicaoUsuariosComponent,
         canActivate: [AuthGuard, AdminGuard]
     },
     {

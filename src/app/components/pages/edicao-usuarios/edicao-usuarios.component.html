@@ -1,0 +1,98 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <div class="mb-4">
+                <h2 class="fonte-titulo mb-1">Edição de usuário</h2>
+                <p class="text-muted mb-0">Utilize o formulário para modificar os dados do usuário.</p>
+            </div>
+
+            <div class="card card-etiqueta p-4">
+
+                <div *ngIf="mensagem" class="alert alert-success">
+                    <strong>Sucesso!</strong> {{ mensagem }}
+                </div>
+
+                <div *ngIf="erroGeral" class="alert alert-danger">
+                    <strong>Erro!</strong> {{ erroGeral }}
+                </div>
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" formControlName="nome" class="form-control" id="nome"
+                                    placeholder=" " required>
+                                <label for="nome">Nome</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.nome" [mensagens]="mensagensNome"
+                                [erroServidor]="erros?.nome"></app-erro-campo>
+                        </div>
+
+                        <div class="col-sm-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" formControlName="sobrenome" class="form-control" id="sobrenome"
+                                    placeholder=" " required>
+                                <label for="sobrenome">Sobrenome</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.sobrenome" [mensagens]="mensagensSobrenome"
+                                [erroServidor]="erros?.sobrenome"></app-erro-campo>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" formControlName="username" class="form-control" id="username"
+                                    placeholder=" " required>
+                                <label for="username">Username</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.username" [mensagens]="mensagensUsername"
+                                [erroServidor]="erros?.username"></app-erro-campo>
+                        </div>
+
+                        <div class="col-sm-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" formControlName="email" class="form-control" id="email"
+                                    placeholder=" " required>
+                                <label for="email">E-mail</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.email" [mensagens]="mensagensEmail"
+                                [erroServidor]="erros?.email"></app-erro-campo>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 mb-4">
+                            <div class="form-floating">
+                                <select formControlName="perfil" class="form-select" id="perfil" required>
+                                    <option value="Operador">Operador</option>
+                                    <option value="Administrador">Administrador</option>
+                                </select>
+                                <label for="perfil">Perfil de acesso</label>
+                            </div>
+
+                            <app-erro-campo [controle]="form.controls.perfil" [mensagens]="mensagensPerfil"
+                                [erroServidor]="erros?.perfil"></app-erro-campo>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-outline-secondary w-100" (click)="voltar()">Voltar</button>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-warning w-100" [disabled]="form.invalid">Atualizar Usuário</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
