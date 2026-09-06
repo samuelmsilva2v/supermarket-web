@@ -37,7 +37,7 @@
                         <h5 class="mb-1">{{ p.nome }}</h5>
 
                         <p class="numero mb-3">
-                            {{ p.preco | currency:'BRL' }} &middot; {{ p.quantidade }} un
+                            {{ p.preco | currency:'BRL' }} &middot; {{ p.quantidade }} {{ abreviacaoUnidadeMedida(p.unidadeMedida) }}
                             <br>
                             <span class="text-muted">total {{ p.preco * p.quantidade | currency:'BRL' }}</span>
                         </p>

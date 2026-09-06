@@ -44,14 +44,30 @@
                         </div>
 
                         <div class="col-sm-6 mb-3">
-                            <div class="form-floating">
-                                <input type="number" formControlName="quantidade" class="form-control numero" id="quantidade"
-                                    placeholder=" " required>
-                                <label for="quantidade">Quantidade</label>
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input type="number" formControlName="quantidade" class="form-control numero" id="quantidade"
+                                        placeholder=" " required>
+                                    <label for="quantidade">Quantidade</label>
+                                </div>
+
+                                <div class="form-floating campo-unidade">
+                                    <select class="form-select numero" formControlName="unidadeMedida" id="unidadeMedida"
+                                        aria-label="Unidade de medida" required>
+                                        <option value="" disabled selected></option>
+
+                                        <option *ngFor="let u of unidadesMedida" value="{{ u.valor }}" title="{{ u.rotulo }}">
+                                            {{ u.curto }}
+                                        </option>
+                                    </select>
+                                    <label for="unidadeMedida">Unidade</label>
+                                </div>
                             </div>
 
                             <app-erro-campo [controle]="form.controls.quantidade" [mensagens]="mensagensQuantidade"
                                 [erroServidor]="erros?.quantidade"></app-erro-campo>
+                            <app-erro-campo [controle]="form.controls.unidadeMedida" [mensagens]="mensagensUnidadeMedida"
+                                [erroServidor]="erros?.unidadeMedida"></app-erro-campo>
                         </div>
                     </div>
 

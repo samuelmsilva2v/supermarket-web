@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { endpoints } from '../../../configurations/environment';
 import { RouterLink } from '@angular/router';
 import { corDaCategoria } from '../../../utils/categoria-cor';
+import { abreviacaoUnidadeMedida } from '../../../utils/unidade-medida';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { PaginacaoComponent } from '../../shared/paginacao/paginacao.component';
 import { PaginaResponse } from '../../../models/pagina-response.model';
@@ -40,6 +41,7 @@ export class ConsultaProdutosComponent {
 
   // Exposto para uso no template
   corDaCategoria = corDaCategoria;
+  abreviacaoUnidadeMedida = abreviacaoUnidadeMedida;
 
   // Construtores
   constructor(private http: HttpClient) { }

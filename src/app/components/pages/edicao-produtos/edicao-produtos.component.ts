@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { endpoints } from '../../../configurations/environment';
 import { corDaCategoria } from '../../../utils/categoria-cor';
+import { UNIDADES_MEDIDA } from '../../../utils/unidade-medida';
 import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component';
 
 @Component({
@@ -27,6 +28,7 @@ export class EdicaoProdutosComponent {
   mensagem: string = '';
   erroGeral: string = '';
   corSelecionada: string = '';
+  unidadesMedida = UNIDADES_MEDIDA;
 
   @ViewChild('precoInput') precoInput!: ElementRef<HTMLInputElement>;
 
@@ -47,6 +49,7 @@ export class EdicaoProdutosComponent {
           this.form.controls.nome.setValue(data.nome);
           this.form.controls.preco.setValue(data.preco);
           this.form.controls.quantidade.setValue(data.quantidade);
+          this.form.controls.unidadeMedida.setValue(data.unidadeMedida);
           this.form.controls.categoriaId.setValue(data.categoria.id);
           this.corSelecionada = corDaCategoria(data.categoria.nome);
           this.formatarPreco(this.precoInput.nativeElement);
@@ -65,6 +68,7 @@ export class EdicaoProdutosComponent {
     nome: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     preco: new FormControl('', [Validators.required, Validators.min(0.01)]),
     quantidade: new FormControl('', [Validators.required, Validators.min(0)]),
+    unidadeMedida: new FormControl('', [Validators.required]),
     categoriaId: new FormControl('', [Validators.required])
   })
 
@@ -82,6 +86,10 @@ export class EdicaoProdutosComponent {
   mensagensQuantidade = {
     required: 'A quantidade do produto é obrigatória',
     min: 'A quantidade do produto não pode ser negativa'
+  };
+
+  mensagensUnidadeMedida = {
+    required: 'A unidade de medida do produto é obrigatória'
   };
 
   mensagensCategoria = {

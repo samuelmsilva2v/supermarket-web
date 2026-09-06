@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { endpoints } from '../../../configurations/environment';
 import { corDaCategoria } from '../../../utils/categoria-cor';
+import { UNIDADES_MEDIDA } from '../../../utils/unidade-medida';
 import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component';
 
 @Component({
@@ -26,6 +27,7 @@ export class CadastroProdutosComponent {
   mensagem: string = '';
   erroGeral: string = '';
   corSelecionada: string = '';
+  unidadesMedida = UNIDADES_MEDIDA;
 
   // Construtores
   constructor(private http: HttpClient, private router: Router) { }
@@ -45,6 +47,7 @@ export class CadastroProdutosComponent {
     nome: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     preco: new FormControl('', [Validators.required, Validators.min(0.01)]),
     quantidade: new FormControl('', [Validators.required, Validators.min(0)]),
+    unidadeMedida: new FormControl('', [Validators.required]),
     categoriaId: new FormControl('', [Validators.required])
   });
 
@@ -62,6 +65,10 @@ export class CadastroProdutosComponent {
   mensagensQuantidade = {
     required: 'A quantidade do produto é obrigatória',
     min: 'A quantidade do produto não pode ser negativa'
+  };
+
+  mensagensUnidadeMedida = {
+    required: 'A unidade de medida do produto é obrigatória'
   };
 
   mensagensCategoria = {

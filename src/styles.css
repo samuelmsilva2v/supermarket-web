@@ -132,6 +132,15 @@ body {
   box-shadow: 0 0 0 0.25rem var(--bs-focus-ring-color);
 }
 
+.input-group > .form-floating.campo-unidade {
+  flex: 0 0 7.5rem;
+  width: 7.5rem;
+}
+
+.campo-unidade label {
+  padding-right: 2.25rem;
+}
+
 .dropdown-menu {
   --bs-dropdown-link-active-bg: var(--cor-oliva);
 }
