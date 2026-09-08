@@ -33,7 +33,7 @@ export class ConsultaUsuariosComponent {
 
   // Estado da paginação
   pagina: number = 0;
-  tamanho: number = 10;
+  tamanho: number = 12;
   totalPaginas: number = 0;
   totalElementos: number = 0;
 

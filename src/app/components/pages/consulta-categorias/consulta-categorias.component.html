@@ -47,7 +47,8 @@
             </p>
 
             <app-paginacao [paginaAtual]="pagina" [totalPaginas]="totalPaginas" [totalElementos]="totalElementos"
-                [tamanhoPagina]="tamanho" (paginaMudou)="onPaginaMudou($event)" (tamanhoMudou)="onTamanhoMudou($event)">
+                [tamanhoPagina]="tamanho" [tamanhosDisponiveis]="[12, 24, 48]" (paginaMudou)="onPaginaMudou($event)"
+                (tamanhoMudou)="onTamanhoMudou($event)">
             </app-paginacao>
 
         </div>
