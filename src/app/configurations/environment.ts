@@ -7,8 +7,11 @@ export const endpoints = {
     consultar_categorias : `${supermarketApi}/api/categorias/consultar`,
     dashboard_categorias : `${supermarketApi}/api/dashboard/produtos-categoria`,
     autenticar_usuario : `${supermarketApi}/api/usuario/autenticar`,
+    esqueci_senha : `${supermarketApi}/api/usuario/esqueci-senha`,
     criar_usuario : `${supermarketApi}/api/usuario/criar`,
     usuario : `${supermarketApi}/api/usuario`,
     consultar_usuarios : `${supermarketApi}/api/usuario`,
+    meu_perfil : `${supermarketApi}/api/usuario/me`,
+    alterar_senha : `${supermarketApi}/api/usuario/me/senha`,
     movimentacao_estoque : `${supermarketApi}/api/movimentacoes-estoque`
 };

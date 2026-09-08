@@ -28,7 +28,6 @@ import { PaginaResponse } from '../../../models/pagina-response.model';
 })
 export class ConsultaProdutosComponent {
 
-  // Atributos
   produtos: any[] = [];
   categorias: any[] = [];
   mensagem: string = '';
@@ -37,18 +36,16 @@ export class ConsultaProdutosComponent {
   exibirConfirmacaoExclusao: boolean = false;
   mostrarMaisFiltros: boolean = false;
 
-  // Estado da paginação
   pagina: number = 0;
   tamanho: number = 12;
   totalPaginas: number = 0;
   totalElementos: number = 0;
 
-  // Exposto para uso no template
+  // Exposto para uso no template (expressões de template só chamam membros do componente, não funções importadas soltas)
   corDaCategoria = corDaCategoria;
   abreviacaoUnidadeMedida = abreviacaoUnidadeMedida;
   unidadesMedida = UNIDADES_MEDIDA;
 
-  // Construtores
   constructor(private http: HttpClient) { }
 
   // Formulário de filtros: nome fica sempre visível, os demais ficam atrás de "Mais filtros"
@@ -66,7 +63,6 @@ export class ConsultaProdutosComponent {
     this.carregarProdutos();
     this.carregarCategorias();
 
-    // Filtra automaticamente ao alterar qualquer campo; o botão de pesquisa força a busca na hora
     this.form.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
       .subscribe(() => {
@@ -75,7 +71,6 @@ export class ConsultaProdutosComponent {
       });
   }
 
-  // Opções do filtro de categoria
   carregarCategorias() {
     this.http.get<any[]>(endpoints.categoria)
       .subscribe({ next: (data) => this.categorias = data });
@@ -90,7 +85,6 @@ export class ConsultaProdutosComponent {
     this.mostrarMaisFiltros = !this.mostrarMaisFiltros;
   }
 
-  // Busca a página atual de produtos, aplicando os filtros preenchidos no formulário
   carregarProdutos() {
     const v = this.form.value;
 
@@ -116,12 +110,10 @@ export class ConsultaProdutosComponent {
       });
   }
 
-  // Só inclui o parâmetro na query quando o filtro foi realmente preenchido
   private comValor(params: HttpParams, chave: string, valor: string | number | null | undefined): HttpParams {
     return (valor !== null && valor !== undefined && valor !== '') ? params.set(chave, valor) : params;
   }
 
-  // Monta as etiquetas dos filtros ativos, exibidas abaixo do formulário
   get filtrosAtivos(): FiltroChip[] {
     const v = this.form.value;
     const chips: FiltroChip[] = [];
@@ -161,7 +153,6 @@ export class ConsultaProdutosComponent {
     return `${nome}: até ${prefixo}${max}`;
   }
 
-  // Remove um filtro (ou par min/max) e recarrega a lista na hora, sem esperar o debounce
   removerFiltro(chave: string) {
     switch (chave) {
       case 'nome': this.form.patchValue({ nome: '' }, { emitEvent: false }); break;
@@ -194,13 +185,11 @@ export class ConsultaProdutosComponent {
     this.carregarProdutos();
   }
 
-  // Abre o modal de confirmação de exclusão de produto
   onDelete(id: string) {
     this.produtoIdParaExcluir = id;
     this.exibirConfirmacaoExclusao = true;
   }
 
-  // Função para enviar a requisição de exclusão de produto para a API
   confirmarExclusao() {
     this.exibirConfirmacaoExclusao = false;
 

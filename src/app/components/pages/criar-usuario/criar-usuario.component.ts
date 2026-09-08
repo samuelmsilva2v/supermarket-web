@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { endpoints } from '../../../configurations/environment';
 import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component';
 
-// Validador de grupo: garante que senha e confirmação de senha sejam iguais
 function senhasIguaisValidator(grupo: AbstractControl): ValidationErrors | null {
   const senha = grupo.get('senha')?.value;
   const senhaConfirmacao = grupo.get('senhaConfirmacao')?.value;
@@ -26,12 +25,10 @@ function senhasIguaisValidator(grupo: AbstractControl): ValidationErrors | null 
 })
 export class CriarUsuarioComponent {
 
-  // Atributos
   mensagemSucesso: string = '';
   mensagemErro: string = '';
   erros: any = null;
 
-  // Construtores
   constructor(private http: HttpClient, private router: Router) { }
 
   form = new FormGroup({
@@ -44,7 +41,6 @@ export class CriarUsuarioComponent {
     senhaConfirmacao: new FormControl('', [Validators.required])
   }, { validators: senhasIguaisValidator });
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>, por campo
   mensagensNome = {
     required: 'Por favor, informe o nome do usuário.',
     minlength: 'O nome deve ter no mínimo 2 caracteres.'

@@ -19,26 +19,21 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
 })
 export class CadastroCategoriasComponent {
 
-  // Atributos
   erros: any = null;
   mensagem: string = '';
   erroGeral: string = '';
 
-  // Construtores
   constructor(private http: HttpClient, private router: Router) { }
 
-  // Objeto para capturar os campos do formulário
   form = new FormGroup({
     nome: new FormControl('', [Validators.required, Validators.maxLength(100)])
   });
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>
   mensagensNome = {
     required: 'O nome da categoria é obrigatório.',
     maxlength: 'O nome da categoria deve ter no máximo 100 caracteres.'
   };
 
-  // Função executada ao enviar o formulário
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

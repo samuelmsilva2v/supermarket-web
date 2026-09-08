@@ -1,6 +1,5 @@
 // Paleta terrosa/fresca para colorir categorias dinamicamente (não há como fixar
 // cor por nome, já que categorias são cadastradas livremente pelo usuário).
-// 11 tons para reduzir a chance de duas categorias comuns caírem na mesma cor.
 const PALETA_CATEGORIAS = [
     '#C1440E', // terracota
     '#2F5233', // oliva
@@ -15,12 +14,8 @@ const PALETA_CATEGORIAS = [
     '#6E5773'  // ameixa-acinzentada
 ];
 
-/**
- * Cor determinística para uma categoria, a partir do seu nome ou ID.
- * A mesma chave sempre resulta na mesma cor, sem precisar mapear categoria por categoria.
- * Usa FNV-1a (boa dispersão de bits) em vez de um hash polinomial simples, que colidia
- * com frequência nos bits baixos para nomes curtos.
- */
+// Usa FNV-1a (boa dispersão de bits) em vez de um hash polinomial simples, que colidia
+// com frequência nos bits baixos para nomes curtos.
 export function corDaCategoria(chave: string): string {
     let hash = 0x811c9dc5;
     for (const c of chave) {

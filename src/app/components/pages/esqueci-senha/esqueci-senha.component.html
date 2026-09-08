@@ -1,0 +1,55 @@
+<div class="d-flex flex-column align-items-center justify-content-center mt-5 px-3">
+
+    <div class="d-flex align-items-center gap-2 mb-4 text-primary">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21c-4.97 0-9-4.03-9-9 0-6 6-10 15-10 0 9-4 10-10 10-2 0-3.5-.5-5-2"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="fonte-titulo fs-3">Supermercado</span>
+    </div>
+
+    <div class="card card-etiqueta p-4" style="width: 100%; max-width: 400px;">
+
+        <ng-container *ngIf="!enviado; else confirmacao">
+
+            <h3 class="fonte-titulo text-center mb-1">Esqueci minha senha</h3>
+            <p class="text-center text-muted">Informe seu e-mail cadastrado e enviaremos uma nova senha de acesso.</p>
+
+            <div *ngIf="erroGeral" class="alert alert-danger py-2">{{ erroGeral }}</div>
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <input type="email" formControlName="email" class="form-control" id="email"
+                            placeholder=" " required>
+                        <label for="email">E-mail</label>
+                    </div>
+
+                    <app-erro-campo [controle]="form.controls.email" [mensagens]="mensagensEmail"
+                        [erroServidor]="erros?.email"></app-erro-campo>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" [disabled]="form.invalid || enviando">
+                    {{ enviando ? 'Enviando...' : 'Enviar nova senha' }}
+                </button>
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                <a routerLink="/pages/autenticar-usuario">Voltar para o login</a>
+            </p>
+
+        </ng-container>
+
+        <ng-template #confirmacao>
+            <h3 class="fonte-titulo text-center mb-1">Verifique seu e-mail</h3>
+            <p class="text-center text-muted mb-4">
+                Enviamos uma nova senha de acesso para o e-mail informado.
+            </p>
+
+            <a routerLink="/pages/autenticar-usuario" class="btn btn-primary w-100">Voltar para o login</a>
+        </ng-template>
+
+    </div>
+
+</div>

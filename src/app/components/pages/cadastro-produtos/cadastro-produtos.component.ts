@@ -21,7 +21,6 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
 })
 export class CadastroProdutosComponent {
 
-  // Atributos
   categorias: any[] = [];
   erros: any = null;
   mensagem: string = '';
@@ -29,10 +28,8 @@ export class CadastroProdutosComponent {
   corSelecionada: string = '';
   unidadesMedida = UNIDADES_MEDIDA;
 
-  // Construtores
   constructor(private http: HttpClient, private router: Router) { }
 
-  // Função executada ao abrir a página
   ngOnInit() {
     this.http.get(endpoints.categoria)
       .subscribe({
@@ -42,7 +39,6 @@ export class CadastroProdutosComponent {
       });
   }
 
-  // Objeto para capturar os campos do formulário
   form = new FormGroup({
     nome: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     preco: new FormControl('', [Validators.required, Validators.min(0.01)]),
@@ -51,7 +47,6 @@ export class CadastroProdutosComponent {
     categoriaId: new FormControl('', [Validators.required])
   });
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>, por campo
   mensagensNome = {
     required: 'O nome do produto é obrigatório.',
     maxlength: 'O nome do produto deve ter no máximo 100 caracteres'
@@ -75,13 +70,11 @@ export class CadastroProdutosComponent {
     required: 'A categoria do produto é obrigatória'
   };
 
-  // Atualiza a bolinha de cor ao trocar a categoria selecionada
   onCategoriaChange() {
     const categoria = this.categorias.find(c => c.id === this.form.value.categoriaId);
     this.corSelecionada = categoria ? corDaCategoria(categoria.nome) : '';
   }
 
-  // Função executada ao enviar o formulário
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -114,7 +107,6 @@ export class CadastroProdutosComponent {
     this.router.navigate(['/pages/dashboard']);
   }
 
-  // Força a exibição do preço com 2 casas decimais ao sair do campo
   formatarPreco(input: HTMLInputElement) {
     const valor = parseFloat(input.value);
 

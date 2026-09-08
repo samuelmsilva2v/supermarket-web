@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { endpoints } from '../../../configurations/environment';
 import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component';
 
@@ -11,6 +12,7 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterLink,
     ErroCampoComponent
   ],
   templateUrl: './autenticar-usuario.component.html',
@@ -18,20 +20,16 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
 })
 export class AutenticarUsuarioComponent {
 
-  // Atributos
   mensagem: string = '';
   erros: any = null;
 
-  // Construtores
   constructor(private http: HttpClient) { }
 
-  // Estrutura do formulário
   form = new FormGroup({
     username : new FormControl('', [Validators.required]),
     senha : new FormControl('', [Validators.required, Validators.minLength(8)])
   });
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>, por campo
   mensagensUsername = {
     required: 'Por favor, informe o username de acesso.'
   };
@@ -41,7 +39,6 @@ export class AutenticarUsuarioComponent {
     minlength: 'Por favor, informe a senha de acesso com pelo menos 8 caracteres.'
   };
 
-  // Função para capturar o evento SUBMIT do formulário
   onSubmit() {
 
     this.mensagem = '';

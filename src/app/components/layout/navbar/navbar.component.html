@@ -18,15 +18,15 @@
 
             <ul class="navbar-nav">
 
-                <li class="nav-item" *ngIf="!isAuthenticated">
+                <li class="nav-item" *ngIf="!isAuthenticated()">
                     <a class="nav-link active" aria-current="page" routerLink="/pages/autenticar-usuario">Autenticar usuário</a>
                 </li>
 
-                <li class="nav-item" *ngIf="isAuthenticated">
+                <li class="nav-item" *ngIf="isAuthenticated()">
                     <a class="nav-link" routerLink="/pages/dashboard">Dashboard</a>
                 </li>
 
-                <li class="nav-item dropdown" *ngIf="isAuthenticated">
+                <li class="nav-item dropdown" *ngIf="isAuthenticated()">
 
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">Gerenciar</a>
@@ -43,7 +43,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-item dropdown" *ngIf="isAuthenticated && isAdmin">
+                <li class="nav-item dropdown" *ngIf="isAuthenticated() && isAdmin()">
 
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUsuarios" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">Usuários</a>
@@ -57,15 +57,15 @@
 
             <div class="d-flex align-items-center ms-auto">
 
-                <div class="d-flex align-items-center me-3" style="color: var(--bs-navbar-active-color);" *ngIf="isAuthenticated">
-                    <div class="me-3">
+                <div class="d-flex align-items-center me-3" style="color: var(--bs-navbar-active-color);" *ngIf="isAuthenticated()">
+                    <a routerLink="/pages/meu-perfil" class="link-conta me-3" title="Meu perfil">
                         <div>
-                            <span class="fw-bold"> {{ nome }}</span> &nbsp; <span class="badge bg-secondary"> {{ perfil}}</span>
+                            <span class="fw-bold"> {{ nome() }}</span> &nbsp; <span class="badge bg-secondary"> {{ perfil() }}</span>
                         </div>
                         <div>
-                            <small>{{ email }}</small>
+                            <small>{{ email() }}</small>
                         </div>
-                    </div>
+                    </a>
                     <button class="btn btn-outline-light" (click)="logout()">Sair</button>
                 </div>
 

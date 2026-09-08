@@ -26,7 +26,6 @@ import { PaginaResponse } from '../../../models/pagina-response.model';
 })
 export class ConsultaUsuariosComponent {
 
-  // Atributos
   usuarios: any[] = [];
   mensagem: string = '';
   erroStatus: string = '';
@@ -34,13 +33,11 @@ export class ConsultaUsuariosComponent {
   exibirConfirmacaoStatus: boolean = false;
   mostrarMaisFiltros: boolean = false;
 
-  // Estado da paginação
   pagina: number = 0;
   tamanho: number = 12;
   totalPaginas: number = 0;
   totalElementos: number = 0;
 
-  // Construtores
   constructor(private http: HttpClient) { }
 
   // Formulário de filtros: nome fica sempre visível, os demais ficam atrás de "Mais filtros"
@@ -54,7 +51,6 @@ export class ConsultaUsuariosComponent {
   ngOnInit() {
     this.carregarUsuarios();
 
-    // Filtra automaticamente ao alterar qualquer campo; o botão de pesquisa força a busca na hora
     this.form.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
       .subscribe(() => {
@@ -72,7 +68,6 @@ export class ConsultaUsuariosComponent {
     this.mostrarMaisFiltros = !this.mostrarMaisFiltros;
   }
 
-  // Busca a página atual de usuários, aplicando os filtros preenchidos no formulário
   carregarUsuarios() {
     const v = this.form.value;
 
@@ -95,12 +90,10 @@ export class ConsultaUsuariosComponent {
       });
   }
 
-  // Só inclui o parâmetro na query quando o filtro foi realmente preenchido
   private comValor(params: HttpParams, chave: string, valor: string | null | undefined): HttpParams {
     return valor ? params.set(chave, valor) : params;
   }
 
-  // Monta as etiquetas dos filtros ativos, exibidas abaixo do formulário
   get filtrosAtivos(): FiltroChip[] {
     const v = this.form.value;
     const chips: FiltroChip[] = [];
@@ -124,7 +117,6 @@ export class ConsultaUsuariosComponent {
     return chips;
   }
 
-  // Remove um filtro e recarrega a lista na hora, sem esperar o debounce
   removerFiltro(chave: string) {
     this.form.patchValue({ [chave]: '' }, { emitEvent: false });
     this.pagina = 0;
@@ -162,13 +154,11 @@ export class ConsultaUsuariosComponent {
       : `Deseja realmente ativar o usuário ${u.nome} ${u.sobrenome}?`;
   }
 
-  // Abre o modal de confirmação de ativação/inativação de usuário
   onAlterarStatus(usuario: any) {
     this.usuarioParaAlterarStatus = usuario;
     this.exibirConfirmacaoStatus = true;
   }
 
-  // Função para enviar a requisição de ativação/inativação de usuário para a API
   confirmarAlteracaoStatus() {
     this.exibirConfirmacaoStatus = false;
 

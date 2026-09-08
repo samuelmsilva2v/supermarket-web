@@ -25,26 +25,22 @@ import { PaginaResponse } from '../../../models/pagina-response.model';
 })
 export class ConsultaCategoriasComponent {
 
-  // Atributos
   categorias: any[] = [];
   mensagem: string = '';
   erroExclusao: string = '';
   categoriaIdParaExcluir: string | null = null;
   exibirConfirmacaoExclusao: boolean = false;
 
-  // Estado da paginação
   pagina: number = 0;
   tamanho: number = 12;
   totalPaginas: number = 0;
   totalElementos: number = 0;
 
-  // Exposto para uso no template
+  // Exposto para uso no template (expressões de template só chamam membros do componente, não funções importadas soltas)
   corDaCategoria = corDaCategoria;
 
-  // Construtores
   constructor(private http: HttpClient) { }
 
-  // Formulário para filtrar categorias por nome
   form = new FormGroup({
     nome: new FormControl('')
   });
@@ -52,7 +48,6 @@ export class ConsultaCategoriasComponent {
   ngOnInit() {
     this.carregarCategorias();
 
-    // Filtra automaticamente ao digitar; o botão de pesquisa força a busca na hora
     this.form.controls.nome.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(() => {
@@ -66,7 +61,6 @@ export class ConsultaCategoriasComponent {
     this.carregarCategorias();
   }
 
-  // Busca a página atual de categorias, aplicando o filtro por nome se houver
   carregarCategorias() {
     const params = new HttpParams()
       .set('nome', this.form.value.nome ?? '')
@@ -94,13 +88,11 @@ export class ConsultaCategoriasComponent {
     this.carregarCategorias();
   }
 
-  // Abre o modal de confirmação de exclusão de categoria
   onDelete(id: string) {
     this.categoriaIdParaExcluir = id;
     this.exibirConfirmacaoExclusao = true;
   }
 
-  // Função para enviar a requisição de exclusão de categoria para a API
   confirmarExclusao() {
     this.exibirConfirmacaoExclusao = false;
 

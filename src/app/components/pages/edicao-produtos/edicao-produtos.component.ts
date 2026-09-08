@@ -21,7 +21,6 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
 })
 export class EdicaoProdutosComponent {
 
-  // Atributos
   id: string = '';
   categorias: any[] = [];
   erros: any = null;
@@ -32,14 +31,12 @@ export class EdicaoProdutosComponent {
 
   @ViewChild('precoInput') precoInput!: ElementRef<HTMLInputElement>;
 
-  // Construtores
   constructor(
     private http: HttpClient,
     private activated: ActivatedRoute,
     private router: Router
   ) { }
 
-  // Função executada ao abrir o componente
   ngOnInit() {
     this.id = this.activated.snapshot.paramMap.get('id') as string;
 
@@ -72,7 +69,6 @@ export class EdicaoProdutosComponent {
     categoriaId: new FormControl('', [Validators.required])
   })
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>, por campo
   mensagensNome = {
     required: 'O nome do produto é obrigatório.',
     maxlength: 'O nome do produto deve ter no máximo 100 caracteres'
@@ -96,7 +92,6 @@ export class EdicaoProdutosComponent {
     required: 'A categoria do produto é obrigatória'
   };
 
-  // Atualiza a bolinha de cor ao trocar a categoria selecionada
   onCategoriaChange() {
     const categoria = this.categorias.find(c => c.id === this.form.value.categoriaId);
     this.corSelecionada = categoria ? corDaCategoria(categoria.nome) : '';
@@ -133,7 +128,6 @@ export class EdicaoProdutosComponent {
     this.router.navigate(['/pages/consulta-produtos']);
   }
 
-  // Força a exibição do preço com 2 casas decimais ao sair do campo
   formatarPreco(input: HTMLInputElement) {
     const valor = parseFloat(input.value);
 

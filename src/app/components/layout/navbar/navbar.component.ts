@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { ThemeService } from '../../../services/theme.service';
+import { SessaoUsuarioService } from '../../../services/sessao-usuario.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,28 +17,18 @@ import { ThemeService } from '../../../services/theme.service';
 })
 export class NavbarComponent {
 
-  isAuthenticated: boolean = false;
-  isAdmin: boolean = false;
-  nome: string = '';
-  email: string = '';
-  perfil: string = '';
   exibirConfirmacaoLogout: boolean = false;
 
-  constructor(protected themeService: ThemeService) { }
+  readonly isAuthenticated = computed(() => this.sessaoService.dados() !== null);
+  readonly isAdmin = computed(() => this.sessaoService.dados()?.perfil === 'Administrador');
+  readonly nome = computed(() => this.sessaoService.dados()?.nome ?? '');
+  readonly email = computed(() => this.sessaoService.dados()?.email ?? '');
+  readonly perfil = computed(() => this.sessaoService.dados()?.perfil ?? '');
 
-  ngOnInit() {
-    if(sessionStorage.getItem('usuario') != null) {
-      this.isAuthenticated = true;
-
-      var data = sessionStorage.getItem('usuario') as string;
-      var json = JSON.parse(data);
-
-      this.nome = json.nome;
-      this.email = json.email;
-      this.perfil = json.perfil;
-      this.isAdmin = json.perfil === 'Administrador';
-    }
-  }
+  constructor(
+    protected themeService: ThemeService,
+    private sessaoService: SessaoUsuarioService
+  ) { }
 
   logout() {
     this.exibirConfirmacaoLogout = true;
@@ -45,7 +36,7 @@ export class NavbarComponent {
 
   confirmarLogout() {
     this.exibirConfirmacaoLogout = false;
-    sessionStorage.removeItem('usuario');
+    this.sessaoService.limpar();
     location.href = '/pages/autenticar-usuario';
   }
 

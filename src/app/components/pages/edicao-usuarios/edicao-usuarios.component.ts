@@ -19,20 +19,17 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
 })
 export class EdicaoUsuariosComponent {
 
-  // Atributos
   id: string = '';
   erros: any = null;
   mensagem: string = '';
   erroGeral: string = '';
 
-  // Construtores
   constructor(
     private http: HttpClient,
     private activated: ActivatedRoute,
     private router: Router
   ) { }
 
-  // Função executada ao abrir o componente
   ngOnInit() {
     this.id = this.activated.snapshot.paramMap.get('id') as string;
 
@@ -58,7 +55,6 @@ export class EdicaoUsuariosComponent {
     perfil: new FormControl('Operador', [Validators.required])
   });
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>, por campo
   mensagensNome = {
     required: 'Por favor, informe o nome do usuário.',
     minlength: 'O nome deve ter no mínimo 2 caracteres.'

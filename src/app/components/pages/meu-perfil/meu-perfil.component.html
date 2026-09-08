@@ -1,0 +1,151 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="mb-4">
+                <h2 class="fonte-titulo mb-1">Meu perfil</h2>
+                <p class="text-muted mb-0">Seus dados de acesso, do jeitinho que aparecem no seu crachá.</p>
+            </div>
+
+            <div *ngIf="!carregando; else carregandoTpl" class="row g-4">
+
+                <div class="col-lg-4">
+                    <div class="cracha card-etiqueta p-4">
+                        <div class="cracha-furo" aria-hidden="true"></div>
+
+                        <div class="cracha-avatar">{{ iniciais }}</div>
+
+                        <h3 class="fonte-titulo cracha-nome">{{ perfilAtual.nome }} {{ perfilAtual.sobrenome }}</h3>
+                        <p class="cracha-username numero mb-2 text-muted">&#64;{{ perfilAtual.username }}</p>
+
+                        <span class="badge cracha-badge"
+                            [class.cracha-badge-admin]="perfilAtual.perfil === 'Administrador'">{{ perfilAtual.perfil }}</span>
+
+                        <div class="cracha-rodape numero text-muted">
+                            Nº crachá desde {{ perfilAtual.createdAt | date:'MM/yyyy' }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 d-flex flex-column gap-4">
+
+                    <div class="card card-etiqueta p-4">
+                        <h4 class="fonte-titulo mb-1">Meus dados</h4>
+                        <p class="text-muted small mb-3">Nome, sobrenome e e-mail exibidos no sistema. Username e
+                            perfil de acesso só podem ser alterados por um administrador.</p>
+
+                        <div *ngIf="mensagemSucessoDados" class="alert alert-success py-2">{{ mensagemSucessoDados }}</div>
+                        <div *ngIf="erroGeralDados" class="alert alert-danger py-2">{{ erroGeralDados }}</div>
+
+                        <form [formGroup]="dadosForm" (ngSubmit)="onSubmitDados()">
+
+                            <div class="row">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" formControlName="nome" class="form-control" id="nome"
+                                            placeholder=" " required>
+                                        <label for="nome">Nome</label>
+                                    </div>
+
+                                    <app-erro-campo [controle]="dadosForm.controls.nome" [mensagens]="mensagensNome"
+                                        [erroServidor]="errosDados?.nome"></app-erro-campo>
+                                </div>
+
+                                <div class="col-sm-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" formControlName="sobrenome" class="form-control" id="sobrenome"
+                                            placeholder=" " required>
+                                        <label for="sobrenome">Sobrenome</label>
+                                    </div>
+
+                                    <app-erro-campo [controle]="dadosForm.controls.sobrenome" [mensagens]="mensagensSobrenome"
+                                        [erroServidor]="errosDados?.sobrenome"></app-erro-campo>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-8 mb-3">
+                                    <div class="form-floating">
+                                        <input type="email" formControlName="email" class="form-control" id="email"
+                                            placeholder=" " required>
+                                        <label for="email">E-mail</label>
+                                    </div>
+
+                                    <app-erro-campo [controle]="dadosForm.controls.email" [mensagens]="mensagensEmail"
+                                        [erroServidor]="errosDados?.email"></app-erro-campo>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" [disabled]="dadosForm.invalid">Salvar
+                                    alterações</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card card-etiqueta p-4">
+                        <h4 class="fonte-titulo mb-1">Alterar senha</h4>
+                        <p class="text-muted small mb-3">Confirme a senha atual para definir uma nova.</p>
+
+                        <div *ngIf="mensagemSucessoSenha" class="alert alert-success py-2">{{ mensagemSucessoSenha }}</div>
+                        <div *ngIf="erroGeralSenha" class="alert alert-danger py-2">{{ erroGeralSenha }}</div>
+
+                        <form [formGroup]="senhaForm" (ngSubmit)="onSubmitSenha()">
+
+                            <div class="row">
+                                <div class="col-sm-8 mb-3">
+                                    <div class="form-floating">
+                                        <input type="password" formControlName="senhaAtual" class="form-control"
+                                            id="senhaAtual" placeholder=" " required>
+                                        <label for="senhaAtual">Senha atual</label>
+                                    </div>
+
+                                    <app-erro-campo [controle]="senhaForm.controls.senhaAtual" [mensagens]="mensagensSenhaAtual"
+                                        [erroServidor]="errosSenha?.senhaAtual"></app-erro-campo>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="password" formControlName="novaSenha" class="form-control"
+                                            id="novaSenha" placeholder=" " required>
+                                        <label for="novaSenha">Nova senha</label>
+                                    </div>
+                                    <div class="form-text">Mín. 8 caracteres, com maiúscula, número e símbolo.</div>
+
+                                    <app-erro-campo [controle]="senhaForm.controls.novaSenha" [mensagens]="mensagensNovaSenha"
+                                        [erroServidor]="errosSenha?.novaSenha"></app-erro-campo>
+                                </div>
+
+                                <div class="col-sm-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="password" formControlName="novaSenhaConfirmacao" class="form-control"
+                                            id="novaSenhaConfirmacao" placeholder=" " required>
+                                        <label for="novaSenhaConfirmacao">Confirmar nova senha</label>
+                                    </div>
+
+                                    <div *ngIf="senhaForm.errors?.['senhasDiferentes'] && (senhaForm.controls.novaSenhaConfirmacao.touched || senhaForm.controls.novaSenhaConfirmacao.dirty)"
+                                        class="text-danger small mt-1">
+                                        Senhas não conferem, por favor verifique.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-outline-secondary" [disabled]="senhaForm.invalid">Alterar
+                                    senha</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <ng-template #carregandoTpl>
+                <div class="card card-etiqueta p-4 text-center text-muted py-5">Carregando seu perfil...</div>
+            </ng-template>
+
+        </div>
+    </div>
+</div>

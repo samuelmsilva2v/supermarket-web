@@ -18,24 +18,20 @@ import { corDaCategoria } from '../../../utils/categoria-cor';
 })
 export class DashboardComponent {
 
-  // Atributos
   dados: any[] = [];
   grafico: Chart = new Chart();
   nomeUsuario: string = '';
   carregando: boolean = true;
 
-  // Exposto para uso no template
+  // Exposto para uso no template (expressões de template só chamam membros do componente, não funções importadas soltas)
   corDaCategoria = corDaCategoria;
 
-  // Construtores
   constructor(private http: HttpClient) { }
 
-  // Verdadeiro se pelo menos uma categoria tiver produto em estoque
   get temEstoque(): boolean {
     return this.dados.some(item => item.qtdProdutos > 0);
   }
 
-  // Método executado ao abrir o componente
   ngOnInit() {
 
     const usuario = sessionStorage.getItem('usuario');

@@ -19,20 +19,17 @@ import { ErroCampoComponent } from '../../shared/erro-campo/erro-campo.component
 })
 export class EdicaoCategoriasComponent {
 
-  // Atributos
   id: string = '';
   erros: any = null;
   mensagem: string = '';
   erroGeral: string = '';
 
-  // Construtores
   constructor(
     private http: HttpClient,
     private activated: ActivatedRoute,
     private router: Router
   ) { }
 
-  // Função executada ao abrir o componente
   ngOnInit() {
     this.id = this.activated.snapshot.paramMap.get('id') as string;
 
@@ -48,7 +45,6 @@ export class EdicaoCategoriasComponent {
     nome: new FormControl('', [Validators.required, Validators.maxLength(100)])
   });
 
-  // Mensagens de validação exibidas pelo <app-erro-campo>
   mensagensNome = {
     required: 'O nome da categoria é obrigatório.',
     maxlength: 'O nome da categoria deve ter no máximo 100 caracteres.'

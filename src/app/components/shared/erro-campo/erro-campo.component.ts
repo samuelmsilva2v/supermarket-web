@@ -12,16 +12,13 @@ import { FormControl } from '@angular/forms';
 })
 export class ErroCampoComponent {
 
-  // O campo do formulário reativo a ser validado
   @Input() controle: FormControl | null = null;
 
   // Mapa entre a chave do erro do Angular (required, min, maxlength, etc.) e a mensagem a ser exibida
   @Input() mensagens: Record<string, string> = {};
 
-  // Mensagem vinda da API (backend), exibida quando não há erro de validação local pendente
   @Input() erroServidor: string | null = '';
 
-  // Escolhe a mensagem a ser exibida: erro de validação local tem prioridade sobre o erro do servidor
   get mensagem(): string | null {
 
     if (this.controle && this.controle.invalid && (this.controle.touched || this.controle.dirty)) {

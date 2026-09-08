@@ -17,7 +17,6 @@ export interface FiltroChip {
 })
 export class FiltroChipsComponent {
 
-  // Filtros atualmente aplicados, exibidos como etiquetas removíveis individualmente
   @Input() chips: FiltroChip[] = [];
 
   @Output() remover = new EventEmitter<string>();

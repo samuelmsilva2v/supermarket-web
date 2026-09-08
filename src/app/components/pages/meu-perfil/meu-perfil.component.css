@@ -1,0 +1,76 @@
+.cracha {
+  text-align: center;
+  position: sticky;
+  top: 1rem;
+}
+
+.cracha-furo {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background-color: var(--cor-creme);
+  border: 1px solid rgba(43, 38, 33, 0.15);
+  box-shadow: inset 0 2px 3px rgba(43, 38, 33, 0.35);
+}
+
+.cracha-avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+  color: var(--cor-creme);
+  background: linear-gradient(155deg, var(--cor-oliva), var(--cor-oliva-escura));
+}
+
+.cracha-nome {
+  margin-bottom: 0.15rem;
+  font-size: 1.3rem;
+}
+
+.cracha-username {
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.cracha-badge {
+  background-color: var(--cor-oliva);
+  color: var(--cor-creme);
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+}
+
+.cracha-badge-admin {
+  background-color: var(--cor-terracota);
+}
+
+.cracha-rodape {
+  margin-top: 1.5rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed rgba(43, 38, 33, 0.25);
+  font-size: 0.78rem;
+}
+
+[data-bs-theme="dark"] .cracha-furo {
+  border-color: rgba(237, 230, 218, 0.15);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+[data-bs-theme="dark"] .cracha-rodape {
+  border-top-color: rgba(237, 230, 218, 0.25);
+}
+
+@media (max-width: 991.98px) {
+  .cracha {
+    position: static;
+  }
+}
