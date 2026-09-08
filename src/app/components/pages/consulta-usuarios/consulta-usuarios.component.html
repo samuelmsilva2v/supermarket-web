@@ -4,18 +4,72 @@
 
             <div class="mb-4">
                 <h2 class="fonte-titulo mb-1">Consulta de usuários</h2>
-                <p class="text-muted mb-0">Filtre pelo username e edite os usuários cadastrados.</p>
+                <p class="text-muted mb-0">Filtre por nome, username, status ou perfil.</p>
             </div>
 
             <div class="card card-etiqueta p-4 mb-4">
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex gap-2 align-items-center flex-wrap">
-                    <div class="form-floating flex-grow-1">
-                        <input type="text" formControlName="username" class="form-control" id="usernameUsuario"
-                            placeholder=" ">
-                        <label for="usernameUsuario">Filtrar por username</label>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <div class="form-floating flex-grow-1">
+                            <input type="text" formControlName="nome" class="form-control" id="nomeUsuario"
+                                placeholder=" ">
+                            <label for="nomeUsuario">Filtrar por nome</label>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2"
+                            (click)="toggleMaisFiltros()" [attr.aria-expanded]="mostrarMaisFiltros"
+                            aria-controls="maisFiltrosUsuarios">
+                            Mais filtros
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                                class="seta-filtro" [class.aberto]="mostrarMaisFiltros">
+                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">Pesquisar</button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Pesquisar</button>
+
+                    <div class="filtros-avancados" [class.aberto]="mostrarMaisFiltros" id="maisFiltrosUsuarios">
+                        <div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" formControlName="username" class="form-control"
+                                            id="usernameFiltro" placeholder=" ">
+                                        <label for="usernameFiltro">Username</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" formControlName="ativo" id="statusFiltro">
+                                            <option value="">Todos</option>
+                                            <option value="true">Ativos</option>
+                                            <option value="false">Inativos</option>
+                                        </select>
+                                        <label for="statusFiltro">Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" formControlName="perfil" id="perfilFiltro">
+                                            <option value="">Todos</option>
+                                            <option value="Operador">Operador</option>
+                                            <option value="Administrador">Administrador</option>
+                                        </select>
+                                        <label for="perfilFiltro">Perfil</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
+
+                <app-filtro-chips [chips]="filtrosAtivos" (remover)="removerFiltro($event)"
+                    (limparTudo)="limparFiltros()"></app-filtro-chips>
             </div>
 
             <div *ngIf="mensagem" class="alert alert-success">

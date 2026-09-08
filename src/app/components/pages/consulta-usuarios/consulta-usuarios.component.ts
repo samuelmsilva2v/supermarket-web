@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { endpoints } from '../../../configurations/environment';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { PaginacaoComponent } from '../../shared/paginacao/paginacao.component';
+import { FiltroChipsComponent, FiltroChip } from '../../shared/filtro-chips/filtro-chips.component';
 import { PaginaResponse } from '../../../models/pagina-response.model';
 
 @Component({
@@ -17,7 +18,8 @@ import { PaginaResponse } from '../../../models/pagina-response.model';
     ReactiveFormsModule,
     RouterLink,
     ConfirmModalComponent,
-    PaginacaoComponent
+    PaginacaoComponent,
+    FiltroChipsComponent
   ],
   templateUrl: './consulta-usuarios.component.html',
   styleUrl: './consulta-usuarios.component.css'
@@ -30,6 +32,7 @@ export class ConsultaUsuariosComponent {
   erroStatus: string = '';
   usuarioParaAlterarStatus: any | null = null;
   exibirConfirmacaoStatus: boolean = false;
+  mostrarMaisFiltros: boolean = false;
 
   // Estado da paginação
   pagina: number = 0;
@@ -40,17 +43,20 @@ export class ConsultaUsuariosComponent {
   // Construtores
   constructor(private http: HttpClient) { }
 
-  // Formulário para filtrar usuários por username
+  // Formulário de filtros: nome fica sempre visível, os demais ficam atrás de "Mais filtros"
   form = new FormGroup({
-    username: new FormControl('')
+    nome: new FormControl(''),
+    username: new FormControl(''),
+    ativo: new FormControl(''),
+    perfil: new FormControl('')
   });
 
   ngOnInit() {
     this.carregarUsuarios();
 
-    // Filtra automaticamente ao digitar; o botão de pesquisa força a busca na hora
-    this.form.controls.username.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged())
+    // Filtra automaticamente ao alterar qualquer campo; o botão de pesquisa força a busca na hora
+    this.form.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
       .subscribe(() => {
         this.pagina = 0;
         this.carregarUsuarios();
@@ -62,12 +68,22 @@ export class ConsultaUsuariosComponent {
     this.carregarUsuarios();
   }
 
-  // Busca a página atual de usuários, aplicando o filtro por username se houver
+  toggleMaisFiltros() {
+    this.mostrarMaisFiltros = !this.mostrarMaisFiltros;
+  }
+
+  // Busca a página atual de usuários, aplicando os filtros preenchidos no formulário
   carregarUsuarios() {
-    const params = new HttpParams()
-      .set('username', this.form.value.username ?? '')
+    const v = this.form.value;
+
+    let params = new HttpParams()
       .set('pagina', this.pagina)
       .set('tamanho', this.tamanho);
+
+    params = this.comValor(params, 'nome', v.nome);
+    params = this.comValor(params, 'username', v.username);
+    params = this.comValor(params, 'ativo', v.ativo);
+    params = this.comValor(params, 'perfil', v.perfil);
 
     this.http.get<PaginaResponse<any>>(endpoints.consultar_usuarios, { params })
       .subscribe({
@@ -77,6 +93,48 @@ export class ConsultaUsuariosComponent {
           this.totalElementos = data.totalElementos;
         }
       });
+  }
+
+  // Só inclui o parâmetro na query quando o filtro foi realmente preenchido
+  private comValor(params: HttpParams, chave: string, valor: string | null | undefined): HttpParams {
+    return valor ? params.set(chave, valor) : params;
+  }
+
+  // Monta as etiquetas dos filtros ativos, exibidas abaixo do formulário
+  get filtrosAtivos(): FiltroChip[] {
+    const v = this.form.value;
+    const chips: FiltroChip[] = [];
+
+    if (v.nome) {
+      chips.push({ chave: 'nome', rotulo: `Nome: "${v.nome}"` });
+    }
+
+    if (v.username) {
+      chips.push({ chave: 'username', rotulo: `Username: "${v.username}"` });
+    }
+
+    if (v.ativo) {
+      chips.push({ chave: 'ativo', rotulo: v.ativo === 'true' ? 'Status: ativo' : 'Status: inativo' });
+    }
+
+    if (v.perfil) {
+      chips.push({ chave: 'perfil', rotulo: `Perfil: ${v.perfil}` });
+    }
+
+    return chips;
+  }
+
+  // Remove um filtro e recarrega a lista na hora, sem esperar o debounce
+  removerFiltro(chave: string) {
+    this.form.patchValue({ [chave]: '' }, { emitEvent: false });
+    this.pagina = 0;
+    this.carregarUsuarios();
+  }
+
+  limparFiltros() {
+    this.form.reset({ username: '', nome: '', ativo: '', perfil: '' }, { emitEvent: false });
+    this.pagina = 0;
+    this.carregarUsuarios();
   }
 
   onPaginaMudou(novaPagina: number) {

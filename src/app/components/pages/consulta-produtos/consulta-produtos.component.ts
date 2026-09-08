@@ -6,9 +6,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { endpoints } from '../../../configurations/environment';
 import { RouterLink } from '@angular/router';
 import { corDaCategoria } from '../../../utils/categoria-cor';
-import { abreviacaoUnidadeMedida } from '../../../utils/unidade-medida';
+import { abreviacaoUnidadeMedida, UNIDADES_MEDIDA } from '../../../utils/unidade-medida';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { PaginacaoComponent } from '../../shared/paginacao/paginacao.component';
+import { FiltroChipsComponent, FiltroChip } from '../../shared/filtro-chips/filtro-chips.component';
 import { PaginaResponse } from '../../../models/pagina-response.model';
 
 @Component({
@@ -19,7 +20,8 @@ import { PaginaResponse } from '../../../models/pagina-response.model';
     ReactiveFormsModule,
     RouterLink,
     ConfirmModalComponent,
-    PaginacaoComponent
+    PaginacaoComponent,
+    FiltroChipsComponent
   ],
   templateUrl: './consulta-produtos.component.html',
   styleUrl: './consulta-produtos.component.css'
@@ -28,10 +30,12 @@ export class ConsultaProdutosComponent {
 
   // Atributos
   produtos: any[] = [];
+  categorias: any[] = [];
   mensagem: string = '';
   erroExclusao: string = '';
   produtoIdParaExcluir: string | null = null;
   exibirConfirmacaoExclusao: boolean = false;
+  mostrarMaisFiltros: boolean = false;
 
   // Estado da paginação
   pagina: number = 0;
@@ -42,25 +46,39 @@ export class ConsultaProdutosComponent {
   // Exposto para uso no template
   corDaCategoria = corDaCategoria;
   abreviacaoUnidadeMedida = abreviacaoUnidadeMedida;
+  unidadesMedida = UNIDADES_MEDIDA;
 
   // Construtores
   constructor(private http: HttpClient) { }
 
-  // Formulário para filtrar produtos por nome
+  // Formulário de filtros: nome fica sempre visível, os demais ficam atrás de "Mais filtros"
   form = new FormGroup({
-    nome: new FormControl('')
+    nome: new FormControl(''),
+    precoMin: new FormControl<number | null>(null),
+    precoMax: new FormControl<number | null>(null),
+    quantidadeMin: new FormControl<number | null>(null),
+    quantidadeMax: new FormControl<number | null>(null),
+    unidadeMedida: new FormControl(''),
+    categoriaId: new FormControl('')
   });
 
   ngOnInit() {
     this.carregarProdutos();
+    this.carregarCategorias();
 
-    // Filtra automaticamente ao digitar; o botão de pesquisa força a busca na hora
-    this.form.controls.nome.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged())
+    // Filtra automaticamente ao alterar qualquer campo; o botão de pesquisa força a busca na hora
+    this.form.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
       .subscribe(() => {
         this.pagina = 0;
         this.carregarProdutos();
       });
+  }
+
+  // Opções do filtro de categoria
+  carregarCategorias() {
+    this.http.get<any[]>(endpoints.categoria)
+      .subscribe({ next: (data) => this.categorias = data });
   }
 
   onSubmit() {
@@ -68,12 +86,25 @@ export class ConsultaProdutosComponent {
     this.carregarProdutos();
   }
 
-  // Busca a página atual de produtos, aplicando o filtro por nome se houver
+  toggleMaisFiltros() {
+    this.mostrarMaisFiltros = !this.mostrarMaisFiltros;
+  }
+
+  // Busca a página atual de produtos, aplicando os filtros preenchidos no formulário
   carregarProdutos() {
-    const params = new HttpParams()
-      .set('nome', this.form.value.nome ?? '')
+    const v = this.form.value;
+
+    let params = new HttpParams()
       .set('pagina', this.pagina)
       .set('tamanho', this.tamanho);
+
+    params = this.comValor(params, 'nome', v.nome);
+    params = this.comValor(params, 'precoMin', v.precoMin);
+    params = this.comValor(params, 'precoMax', v.precoMax);
+    params = this.comValor(params, 'quantidadeMin', v.quantidadeMin);
+    params = this.comValor(params, 'quantidadeMax', v.quantidadeMax);
+    params = this.comValor(params, 'unidadeMedida', v.unidadeMedida);
+    params = this.comValor(params, 'categoriaId', v.categoriaId);
 
     this.http.get<PaginaResponse<any>>(endpoints.consultar_produtos, { params })
       .subscribe({
@@ -83,6 +114,73 @@ export class ConsultaProdutosComponent {
           this.totalElementos = data.totalElementos;
         }
       });
+  }
+
+  // Só inclui o parâmetro na query quando o filtro foi realmente preenchido
+  private comValor(params: HttpParams, chave: string, valor: string | number | null | undefined): HttpParams {
+    return (valor !== null && valor !== undefined && valor !== '') ? params.set(chave, valor) : params;
+  }
+
+  // Monta as etiquetas dos filtros ativos, exibidas abaixo do formulário
+  get filtrosAtivos(): FiltroChip[] {
+    const v = this.form.value;
+    const chips: FiltroChip[] = [];
+
+    if (v.nome) {
+      chips.push({ chave: 'nome', rotulo: `Nome: "${v.nome}"` });
+    }
+
+    if (v.precoMin != null || v.precoMax != null) {
+      chips.push({ chave: 'preco', rotulo: this.rotuloFaixa('Preço', v.precoMin, v.precoMax, 'R$ ') });
+    }
+
+    if (v.quantidadeMin != null || v.quantidadeMax != null) {
+      chips.push({ chave: 'quantidade', rotulo: this.rotuloFaixa('Quantidade', v.quantidadeMin, v.quantidadeMax) });
+    }
+
+    if (v.unidadeMedida) {
+      const unidade = this.unidadesMedida.find(u => u.valor === v.unidadeMedida);
+      chips.push({ chave: 'unidadeMedida', rotulo: `Unidade: ${unidade?.rotulo ?? v.unidadeMedida}` });
+    }
+
+    if (v.categoriaId) {
+      const categoria = this.categorias.find(c => c.id === v.categoriaId);
+      chips.push({
+        chave: 'categoriaId',
+        rotulo: `Categoria: ${categoria?.nome ?? ''}`,
+        cor: categoria ? corDaCategoria(categoria.nome) : undefined
+      });
+    }
+
+    return chips;
+  }
+
+  private rotuloFaixa(nome: string, min: number | null | undefined, max: number | null | undefined, prefixo: string = ''): string {
+    if (min != null && max != null) return `${nome}: ${prefixo}${min} – ${prefixo}${max}`;
+    if (min != null) return `${nome}: a partir de ${prefixo}${min}`;
+    return `${nome}: até ${prefixo}${max}`;
+  }
+
+  // Remove um filtro (ou par min/max) e recarrega a lista na hora, sem esperar o debounce
+  removerFiltro(chave: string) {
+    switch (chave) {
+      case 'nome': this.form.patchValue({ nome: '' }, { emitEvent: false }); break;
+      case 'preco': this.form.patchValue({ precoMin: null, precoMax: null }, { emitEvent: false }); break;
+      case 'quantidade': this.form.patchValue({ quantidadeMin: null, quantidadeMax: null }, { emitEvent: false }); break;
+      case 'unidadeMedida': this.form.patchValue({ unidadeMedida: '' }, { emitEvent: false }); break;
+      case 'categoriaId': this.form.patchValue({ categoriaId: '' }, { emitEvent: false }); break;
+    }
+    this.pagina = 0;
+    this.carregarProdutos();
+  }
+
+  limparFiltros() {
+    this.form.reset({
+      nome: '', precoMin: null, precoMax: null, quantidadeMin: null, quantidadeMax: null,
+      unidadeMedida: '', categoriaId: ''
+    }, { emitEvent: false });
+    this.pagina = 0;
+    this.carregarProdutos();
   }
 
   onPaginaMudou(novaPagina: number) {

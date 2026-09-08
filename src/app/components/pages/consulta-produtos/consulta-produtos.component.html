@@ -4,18 +4,99 @@
 
             <div class="mb-4">
                 <h2 class="fonte-titulo mb-1">Consulta de produtos</h2>
-                <p class="text-muted mb-0">Filtre pelo nome para ver o que está no estoque.</p>
+                <p class="text-muted mb-0">Filtre por nome, preço, quantidade, unidade ou categoria.</p>
             </div>
 
             <div class="card card-etiqueta p-4 mb-4">
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex gap-2 align-items-center flex-wrap">
-                    <div class="form-floating flex-grow-1">
-                        <input type="text" formControlName="nome" class="form-control" id="nomeProduto"
-                            placeholder=" ">
-                        <label for="nomeProduto">Filtrar por nome</label>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <div class="form-floating flex-grow-1">
+                            <input type="text" formControlName="nome" class="form-control" id="nomeProduto"
+                                placeholder=" ">
+                            <label for="nomeProduto">Filtrar por nome</label>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2"
+                            (click)="toggleMaisFiltros()" [attr.aria-expanded]="mostrarMaisFiltros"
+                            aria-controls="maisFiltrosProdutos">
+                            Mais filtros
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                                class="seta-filtro" [class.aberto]="mostrarMaisFiltros">
+                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">Pesquisar</button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Pesquisar</button>
+
+                    <div class="filtros-avancados" [class.aberto]="mostrarMaisFiltros" id="maisFiltrosProdutos">
+                        <div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-6 col-md-3">
+                                    <div class="form-floating">
+                                        <input type="number" formControlName="precoMin" class="form-control numero"
+                                            id="precoMin" placeholder=" " step="0.01">
+                                        <label for="precoMin">Preço mín. (R$)</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-3">
+                                    <div class="form-floating">
+                                        <input type="number" formControlName="precoMax" class="form-control numero"
+                                            id="precoMax" placeholder=" " step="0.01">
+                                        <label for="precoMax">Preço máx. (R$)</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-3">
+                                    <div class="form-floating">
+                                        <input type="number" formControlName="quantidadeMin" class="form-control numero"
+                                            id="quantidadeMin" placeholder=" ">
+                                        <label for="quantidadeMin">Qtd. mínima</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-3">
+                                    <div class="form-floating">
+                                        <input type="number" formControlName="quantidadeMax" class="form-control numero"
+                                            id="quantidadeMax" placeholder=" ">
+                                        <label for="quantidadeMax">Qtd. máxima</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" formControlName="unidadeMedida"
+                                            id="unidadeMedidaFiltro">
+                                            <option value="">Todas</option>
+                                            <option *ngFor="let u of unidadesMedida" value="{{ u.valor }}">
+                                                {{ u.rotulo }}
+                                            </option>
+                                        </select>
+                                        <label for="unidadeMedidaFiltro">Unidade de medida</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" formControlName="categoriaId" id="categoriaFiltro">
+                                            <option value="">Todas</option>
+                                            <option *ngFor="let c of categorias" value="{{ c.id }}">
+                                                {{ c.nome }}
+                                            </option>
+                                        </select>
+                                        <label for="categoriaFiltro">Categoria</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
+
+                <app-filtro-chips [chips]="filtrosAtivos" (remover)="removerFiltro($event)"
+                    (limparTudo)="limparFiltros()"></app-filtro-chips>
             </div>
 
             <div *ngIf="mensagem" class="alert alert-success">

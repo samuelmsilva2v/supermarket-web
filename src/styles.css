@@ -196,3 +196,32 @@ h1, h2, h3, .fonte-titulo {
     box-shadow: 0 12px 24px -14px rgba(0, 0, 0, 0.7);
   }
 }
+
+/* Painel de filtros avançados: recolhe via grid-template-rows para animar até
+   "auto" sem JS medindo altura. O miolo com overflow:hidden é o que permite isso. */
+.filtros-avancados {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.filtros-avancados.aberto {
+  grid-template-rows: 1fr;
+}
+
+.filtros-avancados > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.seta-filtro.aberto {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .filtros-avancados {
+    transition: grid-template-rows 220ms ease;
+  }
+  .seta-filtro {
+    transition: transform 180ms ease;
+  }
+}

@@ -1,0 +1,39 @@
+/* Notch no canto esquerdo lembra uma etiqueta de preço presa por um barbante,
+   ecoando o mesmo motivo de .card-etiqueta usado no resto do app. */
+.chip-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem 0.3rem 1rem;
+  background-color: var(--cor-papel);
+  border: 1px solid rgba(43, 38, 33, 0.15);
+  color: var(--cor-tinta);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+}
+
+[data-bs-theme="dark"] .chip-etiqueta {
+  border-color: rgba(237, 230, 218, 0.18);
+}
+
+.chip-etiqueta-remover {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--cor-terracota);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chip-etiqueta-remover:hover {
+  color: var(--cor-oliva-escura);
+}
+
+.chip-etiqueta-remover:focus-visible {
+  outline: 2px solid var(--cor-terracota);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

@@ -1,0 +1,14 @@
+<div class="d-flex flex-wrap align-items-center gap-2 mt-3" *ngIf="chips.length > 0">
+
+    <span class="chip-etiqueta" *ngFor="let chip of chips">
+        <span *ngIf="chip.cor" class="ponto" [style.background-color]="chip.cor"></span>
+        {{ chip.rotulo }}
+        <button type="button" class="chip-etiqueta-remover" (click)="remover.emit(chip.chave)"
+            [attr.aria-label]="'Remover filtro ' + chip.rotulo">&times;</button>
+    </span>
+
+    <button type="button" class="btn btn-link btn-sm text-decoration-none p-0" (click)="limparTudo.emit()">
+        Limpar filtros
+    </button>
+
+</div>
